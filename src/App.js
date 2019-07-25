@@ -45,23 +45,7 @@ class App extends Component {
   }
 
   render() {
-    const customers = this.state.customers.map((customer, i) => {
-      return (
-            <tr className="table-active" key={i}>
-              <th scope="row">{customer.firstName}</th>
-              <td>{customer.lastName}</td>
-              <td>{customer.age}</td>
-              <td>{customer.birthDate}</td>
-              <td>
-                <button
-                  className="btn btn-danger"
-                  onClick={this.removeCustomer.bind(this, i)}>
-                  Borrar
-                </button>
-              </td>
-            </tr>
-      )
-    });
+
 
     const modalAddCustomer = this.state.showModal ? (
       <Modal>

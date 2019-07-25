@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 
-class AddCustomerForm extends Component {
+export default class NewCustomer extends Component {
   constructor () {
     super();
     this.state = {
+      customerId: '',
       firstName: '',
       lastName: '',
       age: '',
@@ -13,46 +14,42 @@ class AddCustomerForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit(e) {
+  onSubmit = e => {
     // se evita refrescar la pagina
     e.preventDefault();
     // invoca al evento del padre
-    this.props.onAddCustomer(this.state);
+    this.props.addCustomer(this.state);
     this.setState({
       firstName: '',
       lastName: '',
       age: '',
       birthDay: ''
+    });    
+  };
+
+  onChange = e => {
+    this.setState({
+      [e.target.name]: e.target.value
     });
-  }
+  };
 
   onClose(e) {
-    // se evita refrescar la pagina
-    //e.preventDefault();
     // invoca al evento del padre
     this.props.onClose();
-  }
-
-  handleInputChange(e) {
-    const {value, name} = e.target;
-    console.log(value, name);
-    this.setState({
-      [name]: value
-    });
   }
 
   render() {
     return (
       <div className="card">
-        <form onSubmit={this.handleSubmit} className="card-body">
+        <form onSubmit={this.onSubmit} className="card-body">
           <div className="form-group">
             <input
               type="text"
               name="firstName"
               className="form-control"
               value={this.state.firstName}
-              onChange={this.handleInputChange}
-              placeholder="Nombre"
+              onChange={this.onChange}
+              placeholder="Ingrese Nombre"
               />
           </div>
           <div className="form-group">
@@ -61,8 +58,8 @@ class AddCustomerForm extends Component {
               name="lastName"
               className="form-control"
               value={this.state.lastName}
-              onChange={this.handleInputChange}
-              placeholder="Apellido"
+              onChange={this.onChange}
+              placeholder="Ingrese Apellido"
               />
           </div>
           <div className="form-group">
@@ -71,8 +68,8 @@ class AddCustomerForm extends Component {
               name="age"
               className="form-control"
               value={this.state.age}
-              onChange={this.handleInputChange}
-              placeholder="Edad"
+              onChange={this.onChange}
+              placeholder="Ingrese Edad"
               />
           </div>
           <div className="form-group">
@@ -81,21 +78,18 @@ class AddCustomerForm extends Component {
               name="birthDay"
               className="form-control"
               value={this.state.birthDay}
-              onChange={this.handleInputChange}
-              placeholder="Fecha Nacimiento"
+              onChange={this.onChange}
+              placeholder="Ingrese Fecha Nacimiento"
               />
           </div>
           <button type="submit" className="btn btn-primary">
-          Grabar
+            Grabar
           </button>
           <button onClick="onClose" className="btn btn-primary">
-          Grabar
+            Cerrar
           </button>
         </form>
       </div>
     )
   }
-
 }
-
-export default AddCustomerForm;
