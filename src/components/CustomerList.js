@@ -11,7 +11,7 @@ export default class CustomerList extends Component {
                         <div className="col-md-8">
                             <div>Lista de Clientes
                                 <span className="badge badge-pill badge-light ml-2">
-                                    {this.props.customers.length}
+                                    {this.props.customers && this.props.customers.length}
                                 </span>
                             </div>                              
                             <table className="table table-hover">
@@ -25,7 +25,8 @@ export default class CustomerList extends Component {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    {this.props.customers.map((customer) =>
+                                    {this.props.customers && 
+                                     this.props.customers.map((customer) =>
                                         <Customer key={customer.customerId}
                                             customer={customer}
                                             deleteCustomer={this.props.deleteCustomer}
