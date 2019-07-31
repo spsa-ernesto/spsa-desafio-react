@@ -1,30 +1,43 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import {PropTypes} from 'prop-types';
+import Customer from './Customer'
 
 export default class CustomerList extends Component {
-    render() {
-        
+    render() {        
         return (
             <div>
-                {this.props.customers.map((customer, i) => {
-                    return (
-                        <tr className="table-active" key={i}>
-                            <th scope="row">{customer.firstName}</th>
-                            <td>{customer.lastName}</td>
-                            <td>{customer.age}</td>
-                            <td>{customer.birthDate}</td>
-                            <td>
-                            <button
-                                className="btn btn-danger"
-                                onClick={this.removeCustomer.bind(this, i)}>
-                                Borrar
-                            </button>
-                            </td>
-                        </tr>
-                    )
-                })}
+                <div className="container">                  
+                    <div className="row mt-4">                        
+                        <div className="col-md-8">
+                            <div>Lista de Clientes
+                                <span className="badge badge-pill badge-light ml-2">
+                                    {this.props.customers.length}
+                                </span>
+                            </div>                              
+                            <table className="table table-hover">
+                                <thead>
+                                <tr className="table-dark">
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Apellido</th>
+                                    <th scope="col">Edad</th>
+                                    <th scope="col">Fecha Nacimiento</th>
+                                    <th scope="col"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {this.props.customers.map((customer) =>
+                                        <Customer key={customer.customerId}
+                                            customer={customer}
+                                            deleteCustomer={this.props.deleteCustomer}
+                                        />
+                                    )}
+                                </tbody>
+                            </table>        
+                        </div>
+                    </div>
+                </div>
             </div>
-        )
+        );
     }
 }
 

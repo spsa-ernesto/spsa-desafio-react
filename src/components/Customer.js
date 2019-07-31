@@ -6,26 +6,27 @@ export default class Customer extends Component {
         const { customer } = this.props;
 
         return (
-            <div>
-                <tr className="table-active" key={customer.customerId}>
-                    <th scope="row">{customer.firstName}</th>
-                    <td>{customer.lastName}</td>
-                    <td>{customer.age}</td>
-                    <td>{customer.birthDate}</td>
-                    <td>
-                    <button
-                        className="btn btn-danger"
-                        onClick={this.props.deleteCustomer.bind(this, customer.customerId)}>
-                        Borrar
-                    </button>
-                    </td>
-                </tr>
-            </div>
+            <tr className="table-active" key={customer.customerId}>
+                <th scope="row">{customer.firstName}</th>
+                <td>{customer.lastName}</td>
+                <td>{customer.age}</td>
+                <td>{customer.birthDate}</td>
+                <td>
+                <button className="btn btn-danger" 
+                    onClick={() => {
+                        if(window.confirm('Seguro de borrar cliente?')){
+                            let deleteCustomer = this.props.deleteCustomer.bind(this, customer.customerId);//bind will return to reference to binded function and not call it.
+                            deleteCustomer();
+                            }}}>
+                    Borrar
+                </button>                
+                </td>
+            </tr>
         )
     }
 }
 
 // Validation
 Customer.propTypes = {
-    task: PropTypes.object.isRequired
+    customer: PropTypes.object.isRequired
 }

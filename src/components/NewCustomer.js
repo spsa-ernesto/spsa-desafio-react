@@ -8,22 +8,19 @@ export default class NewCustomer extends Component {
       firstName: '',
       lastName: '',
       age: '',
-      birthDay: ''
+      birthDate: ''
     };
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   onSubmit = e => {
-    // se evita refrescar la pagina
     e.preventDefault();
-    // invoca al evento del padre
     this.props.addCustomer(this.state);
     this.setState({
+      customerId: '',
       firstName: '',
       lastName: '',
       age: '',
-      birthDay: ''
+      birthDate: ''
     });    
   };
 
@@ -32,11 +29,6 @@ export default class NewCustomer extends Component {
       [e.target.name]: e.target.value
     });
   };
-
-  onClose(e) {
-    // invoca al evento del padre
-    this.props.onClose();
-  }
 
   render() {
     return (
@@ -50,6 +42,7 @@ export default class NewCustomer extends Component {
               value={this.state.firstName}
               onChange={this.onChange}
               placeholder="Ingrese Nombre"
+              required
               />
           </div>
           <div className="form-group">
@@ -60,6 +53,7 @@ export default class NewCustomer extends Component {
               value={this.state.lastName}
               onChange={this.onChange}
               placeholder="Ingrese Apellido"
+              required
               />
           </div>
           <div className="form-group">
@@ -70,24 +64,28 @@ export default class NewCustomer extends Component {
               value={this.state.age}
               onChange={this.onChange}
               placeholder="Ingrese Edad"
+              required
               />
           </div>
           <div className="form-group">
             <input
               type="text"
-              name="birthDay"
+              name="birthDate"
               className="form-control"
-              value={this.state.birthDay}
+              value={this.state.birthDate}
               onChange={this.onChange}
               placeholder="Ingrese Fecha Nacimiento"
+              required
               />
           </div>
-          <button type="submit" className="btn btn-primary">
-            Grabar
-          </button>
-          <button onClick="onClose" className="btn btn-primary">
-            Cerrar
-          </button>
+          <div>
+            <button type="submit" className="btn btn-primary">
+              Grabar
+            </button>
+            <button onClick={this.props.onBack} className="btn btn-primary">
+              Regresar
+            </button>
+          </div>
         </form>
       </div>
     )

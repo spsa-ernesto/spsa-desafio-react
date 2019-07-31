@@ -1,108 +1,120 @@
 import React, {Component} from 'react';
 import './App.css';
-import Button from 'react-bootstrap/Button';
-import Modal from './components/modalForm.js';
-
-// data
-import {customers} from './customers.json';
-
-// subcomponents
-import AddCustomerForm from './components/addCustomerForm';
+//import {customers} from './customers.json';
+import {BrowserRouter as Router, Route, NavLink } from "react-router-dom";
+import CustomerList from './components/CustomerList';
+import NewCustomer from './components/NewCustomer';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      customers,
-      showModal: false
+      customers: [],
+      backToHome: false,
+      isLoading: false
     };
-    this.handleAddCustomer = this.handleAddCustomer.bind(this);
-    this.handleShow = this.handleShow.bind(this);
-    this.handleHide = this.handleHide.bind(this);
+    this.handleNewCustomer = this.handleNewCustomer.bind(this);
+    this.handleBackToHome = this.handleBackToHome.bind(this);
+    this.deleteCustomer = this.deleteCustomer.bind(this);
   };
 
-  handleAddCustomer(customer) {
-    this.setState({
-      customers: [...this.state.customers, customer]
-    });
-    this.handleClose();
+  componentDidMount_old() {
+    fetch(`http://localhost:8081/api/v1/customers`)
+    .then(response => response.json())
+    .then(data =>
+      this.setState({
+        customers: data,
+        isLoading: false,
+      }))
+    .catch((error) => {
+      console.error(error);
+      this.setState({ isLoading: false });
+    });    
   };
 
-  removeCustomer(index) {
+  async componentDidMount() {
+    try {
+      let response = await fetch(`http://localhost:8081/api/v1/customers`);
+      let responseJson = await response.json();
+      this.setState({
+        customers: responseJson,
+        isLoading: false,
+      })
+    } catch (error) {
+      console.error(error);
+      this.setState({ isLoading: false });
+    }
+  };
+
+  postData(customer) {
+    try {
+      fetch(`http://localhost:8081/api/v1/customers`, {
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(customer)
+      });
+    } catch (error) {
+      console.error(error);
+      this.setState({ isLoading: false });
+    }
+  };
+
+  deleteData(customerId) {
+    try {
+      fetch(`http://localhost:8081/api/v1/customers`, {
+        method: 'delete',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(customerId)
+      });
+    } catch (error) {
+      console.error(error);
+      this.setState({ isLoading: false });
+    }
+  };   
+
+  handleBackToHome() {
+    document.getElementById('home').click();
+  }
+
+  handleNewCustomer(customer) {
+    this.postData(customer);
+    this.handleBackToHome();
+  };
+
+  deleteCustomer(index) {
     this.setState({
-      customers: this.state.customers.filter((e, i) => {
-        return i !== index
+      customers: this.state.customers.filter((customer) => {
+        return customer.customerId!== index
       })
     });
+    this.deleteData(index);
   };
 
-  handleShow() {
-    this.setState({showModal: true});
-  }
-
-  handleHide() {
-    this.setState({showModal: false});
-  }
-
-  render() {
-
-
-    const modalAddCustomer = this.state.showModal ? (
-      <Modal>
-        <div className="modal">
-          <AddCustomerForm onAddCustomer={this.handleAddCustomer}
-                           onShow={this.state.showModal}
-                           onClose={this.handleHide}>
-          </AddCustomerForm>
-        </div>
-      </Modal>
-    ) : null;
-
-    // RETURN THE COMPONENT
+  render() { 
+    // return the component
     return (
-      <div className="App">
+      <div>
+        <Router>
+          <NavLink id="home" to="/">Inicio</NavLink>
+          <br/>
+          <NavLink to="/newCustomer">Creación de Cliente</NavLink>
 
-        <nav className="navbar navbar-dark bg-dark">
-          <a className="navbar-brand" href="/">
-            Clientes
-            <span className="badge badge-pill badge-light ml-2">
-              {this.state.customers.length}
-            </span>
-          </a>
-        </nav>
-
-        <div>
-          <Button variant="primary" onClick={this.handleShow}>
-            Agregar Cliente
-          </Button>
-        </div>
-
-        <div>
-          {modalAddCustomer}
-        </div>
-
-        <div className="container">
-          <div className="row mt-4">
-            <div className="col-md-8">
-            <table className="table table-hover">
-              <thead>
-                <tr className="table-dark">
-                  <th scope="col">Nombre</th>
-                  <th scope="col">Apellido</th>
-                  <th scope="col">Edad</th>
-                  <th scope="col">Fecha Nacimiento</th>
-                  <th scope="col"></th>
-                </tr>
-              </thead>
-              <tbody>
-                  {customers}
-              </tbody>
-            </table>
-
-            </div>
-          </div>
-        </div>
-      </div>
+          <Route exact path="/" render={() => {
+            return  (
+              <div>
+                <CustomerList   
+                  customers={this.state.customers}
+                  deleteCustomer={this.deleteCustomer}/>
+              </div>)
+          }}>
+          </Route>
+          <Route path="/newCustomer" render={() => {
+            return <NewCustomer 
+              addCustomer={this.handleNewCustomer}
+              onBack={this.handleBackToHome} />;
+          }}/>
+        </Router>
+      </div>   
     );
   }
 }
