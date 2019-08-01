@@ -2,76 +2,82 @@ import React, {Component} from 'react';
 import './App.css';
 import {BrowserRouter as Router, Route, NavLink } from "react-router-dom";
 import CustomerList from './components/CustomerList';
-import NewCustomer from './components/NewCustomer';
-import KpiCustomers from './components/KpiCustomers';
+import CustomerNew from './components/CustomerNew';
+import CustomerKpi from './components/CustomerKpi';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
       customers: [],
-      kpiCustomers: [],
+      customerKpi: [],
       backToHome: false,
       isLoading: false
     };
-    this.handleNewCustomer = this.handleNewCustomer.bind(this);
-    this.handleBackToHome = this.handleBackToHome.bind(this);
-    this.deleteCustomer = this.deleteCustomer.bind(this);
+    this.handleAddCustomer = this.handleAddCustomer.bind(this);
+    this.handleDeleteCustomer = this.handleDeleteCustomer.bind(this);
+    this.handleBackToHome = this.handleBackToHome.bind(this);    
   };
 
-  async componentDidMount() {
-    this.getAllCustomers();
-    this.getKpiCustomers();
+  componentDidMount() {
+    this.getCustomerAll();
+    this.getCustomerKpi();
   };
 
-  async getAllCustomers() {
+  getCustomerAll() {
     try {
-      let response = await fetch(`http://localhost:8081/api/v1/customers`);
-      let responseJson = await response.json();
-      this.setState({
-        customers: responseJson,
-        isLoading: false,
-      });
+      fetch(`http://localhost:8081/api/v1/customers`)
+      .then((resp) => resp.json())
+      .then((data) =>
+        this.setState({
+          customers: data,
+          isLoading: false,
+        })
+      )
     } catch (error) {
       console.error(error);
       this.setState({ isLoading: false });
     }
   };  
-
-  async getKpiCustomers() {
+ 
+  getCustomerKpi() {
     try {
-      let response = await fetch(`http://localhost:8081/api/v1/customers/kpi`);
-      let responseJson = await response.json();
-      this.setState({
-        kpiCustomers: responseJson,
-        isLoading: false,
-      });
+      fetch(`http://localhost:8081/api/v1/customers/kpi`)
+      .then((resp) => resp.json())
+      .then((data) =>
+        this.setState({
+          customerKpi: data,
+          isLoading: false,
+        })
+      )
     } catch (error) {
       console.error(error);
       this.setState({ isLoading: false });
     }
   };   
 
-  postData(customer) {
+  handleAddCustomer(customer) {
     try {
       fetch(`http://localhost:8081/api/v1/customers`, {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(customer)
-      });
+      })
+      .then(() => this.handleBackToHome());      
     } catch (error) {
       console.error(error);
       this.setState({ isLoading: false });
     }
   };
 
-  deleteData(customerId) {
+  handleDeleteCustomer(customerId) {
     try {
       fetch(`http://localhost:8081/api/v1/customers`, {
         method: 'delete',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(customerId)
-      });
+      })
+      .then(() => this.handleBackToHome());
     } catch (error) {
       console.error(error);
       this.setState({ isLoading: false });
@@ -79,20 +85,11 @@ class App extends Component {
   };   
 
   handleBackToHome() {
-    this.getAllCustomers();
-    this.getKpiCustomers();
+    console.log("handleBackToHome");
+    this.getCustomerAll();
+    this.getCustomerKpi();
     document.getElementById('home').click();
   }
-
-  handleNewCustomer(customer) {
-    this.postData(customer);
-    this.handleBackToHome();
-  };
-
-  deleteCustomer(index) {
-    this.deleteData(index);
-    this.handleBackToHome();
-  };
 
   render() { 
     return (
@@ -100,31 +97,32 @@ class App extends Component {
         <Router>
           <NavLink id="home" to="/">Inicio</NavLink>
           <br/>
-          <NavLink to="/newCustomer">Creación de Cliente</NavLink>
+          <NavLink to="/customerNew">Creación de Cliente</NavLink>
           <br/>
           <NavLink to="/">Lista de Clientes</NavLink>
           <br/>
-          <NavLink to="/kpiCustomers">KPI de Clientes</NavLink>  
-
+          <NavLink to="/customerKpi">KPI de Clientes</NavLink>  
+          <br/>
+          <br/>          
           <Route exact path="/" render={() => {
             return  (
               <div>
                 <CustomerList   
                   customers={this.state.customers}
-                  deleteCustomer={this.deleteCustomer}/>
+                  deleteCustomer={this.handleDeleteCustomer}/>
               </div>)
           }}>
           </Route>
 
-          <Route path="/newCustomer" render={() => {
-            return <NewCustomer 
-              addCustomer={this.handleNewCustomer}
+          <Route path="/customerNew" render={() => {
+            return <CustomerNew
+              addCustomer={this.handleAddCustomer}
               onBack={this.handleBackToHome} />;
           }}/>
 
-          <Route path="/kpiCustomers" render={() => {
-            return <KpiCustomers 
-              data={this.state.kpiCustomers}
+          <Route path="/customerKpi" render={() => {
+            return <CustomerKpi 
+              data={this.state.customerKpi}
               onBack={this.handleBackToHome} />;
           }}/>
         </Router>        
