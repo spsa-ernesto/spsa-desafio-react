@@ -33,7 +33,7 @@ export default class CustomerNew extends Component {
   render() {
     return (
       <div className="card">
-        <div className="btn btn-primary">Creación de Cliente</div>
+        <div className="btn btn-success">Creación de Cliente</div>
         <form onSubmit={this.onSubmit} className="card-body">
           <div className="form-group">
             <input
@@ -80,11 +80,8 @@ export default class CustomerNew extends Component {
               />
           </div>
           <div>
-              <button type="submit" className="btn btn-primary">
+              <button type="submit" className="btn btn-success">
                 Grabar
-              </button>
-              <button onClick={this.props.onBack} className="btn btn-primary">
-                Regresar
               </button>
           </div>
         </form>

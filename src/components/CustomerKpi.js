@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
 
 export default class CustomerKpi extends Component {
-    render() {
-        const { data } = this.props;
+    componentDidMount() {
+        let getCustomerKpi = this.props.getCustomerKpi.bind(this);
+        getCustomerKpi();
+    }      
 
+    render() {
         return (
             <div className="card">
-            <div className="btn btn-primary">KPI de Clientes</div>
+            <div className="btn btn-success">KPI de Clientes</div>
                 <table className="table table-hover">
                     <thead>
                     <tr className="table-dark">
@@ -17,13 +20,9 @@ export default class CustomerKpi extends Component {
                     </thead>
                     <tbody>
                         <tr className="table-active">
-                            <td>{data.averageAge}</td>
-                            <td>{data.standardDeviation}</td>
-                            <td>
-                            <button onClick={this.props.onBack} className="btn btn-primary">
-                                Regresar
-                            </button>               
-                            </td>
+                            <td>{this.props.data.averageAge}</td>
+                            <td>{this.props.data.standardDeviation}</td>
+                            <td></td>
                         </tr>                          
                     </tbody>
                 </table> 

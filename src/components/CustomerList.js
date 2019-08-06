@@ -1,15 +1,23 @@
 import React, { Component } from 'react';
-import {PropTypes} from 'prop-types';
 import Customer from './Customer'
 
 export default class CustomerList extends Component {
-    render() {        
+    componentDidMount() {
+        let getCustomerAll = this.props.getCustomerAll.bind(this);
+        getCustomerAll();
+    }
+
+    render() {
+        if (this.props.isLoading) {
+          return <p>Loading...</p>;
+        }
+
         return (
             <div className="card">
-            <div className="btn btn-primary">
+            <div className="btn btn-success">
                 <div>Lista de Clientes
                     <span className="badge badge-pill badge-light ml-2">
-                        {this.props.customers && this.props.customers.length}
+                        {this.props.data && this.props.data.length}
                     </span>
                 </div>
             </div>
@@ -24,8 +32,8 @@ export default class CustomerList extends Component {
                 </tr>
                 </thead>
                 <tbody>
-                    {this.props.customers && 
-                        this.props.customers.map((customer) =>
+                    {this.props.data && 
+                        this.props.data.map((customer) =>
                         <Customer key={customer.customerId}
                             customer={customer}
                             deleteCustomer={this.props.deleteCustomer}
@@ -36,8 +44,4 @@ export default class CustomerList extends Component {
         </div>
         );
     }
-}
-
-CustomerList.propTypes = {
-    customers: PropTypes.array.isRequired
 }
