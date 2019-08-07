@@ -28,6 +28,7 @@ export default class CustomerList extends Component {
                     <th scope="col">Apellido</th>
                     <th scope="col">Edad</th>
                     <th scope="col">Fecha Nacimiento</th>
+                    <th scope="col">Fecha Probable Muerte </th>
                     <th width="10%"></th>
                 </tr>
                 </thead>

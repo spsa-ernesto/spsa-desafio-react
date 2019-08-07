@@ -4,6 +4,9 @@ import CustomerList from './components/CustomerList';
 import CustomerNew from './components/CustomerNew';
 import CustomerKpi from './components/CustomerKpi';
 
+// offline data
+import {customersOfflineData} from './customersOfflineData.json';
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -11,10 +14,11 @@ class App extends Component {
       page: 'home',
       title: 'Inicio',
       customers: [],
+      customersOffline: customersOfflineData,
       customerKpi: [],
       backToHome: false,
       isLoading: false,
-      error: false
+      offline: false
     };
     this.handleGoHomeClick = this.handleGoHomeClick.bind(this);
     this.handleGoCustomerNewClick = this.handleGoCustomerNewClick.bind(this);
@@ -67,8 +71,15 @@ class App extends Component {
     this.setState({ isLoading: true });
     fetch(this.customersUrl)
         .then(res => res.json())
-        .then((data) => this.setState({ customers: data, isLoading: false }))
-        .catch((err) => this.setState({ isLoading: false, error: true }));
+        .then((data) => {
+          this.setState({ 
+            customers: data, 
+            isLoading: false,
+            offline: false });
+        })
+        .catch((err) => {
+          this.toogleOfflineMode();
+        });
   }
  
   getCustomerKpi() {
@@ -76,7 +87,10 @@ class App extends Component {
     fetch(this.customerKpiUrl)
         .then(res => res.json())
         .then((data) => this.setState({ customerKpi: data, isLoading: false }))
-        .catch((err) => this.setState({ isLoading: false, error: true }));
+        .catch((err) => {
+          this.setState({customerKpi: {averageAge: 33.05, standardDeviation:5.89}});
+          this.toogleOfflineMode();
+        });
   };   
 
   handleAddCustomer(customer) {
@@ -86,7 +100,14 @@ class App extends Component {
       body: JSON.stringify(customer)
     })
     .then(() => alert('Datos registrados satisfactoriamente!'))
-    .catch((err) => this.setState({ isLoading: false, error: true }));    
+    .catch((err) => {
+      customer.estimateDeathDate = "01/01/2060"
+      this.setState({
+        customersOffline: [...this.state.customersOffline, customer]
+      });
+      this.toogleOfflineMode();
+      alert('Datos registrados satisfactoriamente!');
+    });    
   };
 
   handleDeleteCustomer(customerId) {
@@ -96,8 +117,29 @@ class App extends Component {
       body: JSON.stringify(customerId)
     })
     .then(() => this.setState({page: 'home', title: 'Inicio'}))
-    .catch((err) => this.setState({ isLoading: false, error: true })); 
-  };   
+    .catch((err) => {
+      this.setState({
+        customersOffline: this.state.customersOffline.filter((customer) => {
+          return customer.customerId !== customerId
+        })
+      });      
+      this.toogleOfflineMode();
+    }); 
+  };
+
+  toogleOfflineMode() {
+    this.setState({
+      isLoading: false,
+      offline: true });
+  }
+
+  getCustomersData(){
+    return this.state.offline ? this.state.customersOffline : this.state.customers;
+  }
+
+  getModeText() {
+    return this.state.offline ? "Offline" : "Online";
+  }
 
   getContent() {
     if (this.state.page === 'home') {
@@ -121,14 +163,14 @@ class App extends Component {
       return <CustomerNew addCustomer={this.handleAddCustomer}
                           onBack={this.handleBackToHome} />;
     } else if (this.state.page === 'customerList') {
-      return <CustomerList data={this.state.customers}
+      return <CustomerList data={this.getCustomersData()}
                            getCustomerAll={this.getCustomerAll}
                            deleteCustomer={this.handleDeleteCustomer}/>;
     } else if (this.state.page === 'customerKpi') {
       return <CustomerKpi data={this.state.customerKpi}
                           getCustomerKpi={this.getCustomerKpi}/>;
     }
-  }  
+  }
 
   render() {
     let hrefLink = '#';
@@ -136,11 +178,17 @@ class App extends Component {
     return (
       <div className="card">
         <div className="card-header">
-          <a href={hrefLink} onClick={this.handleGoHomeClick} className="card-link">
-            Inicio
-            <i className="material-icons">home</i>
-          </a>
-        </div>
+        <div className="card-link">
+            <div className="Inline-left" >
+            <a href={hrefLink} onClick={this.handleGoHomeClick}>
+              Inicio
+              <i className="material-icons">home</i>
+            </a>
+            </div> 
+            <div className="Inline-center">SPSA - Mantenimiento de Clientes</div>
+            <div className="Inline-right">({this.getModeText()})</div>        
+          </div>
+        </div>        
         <div>
           {this.getContent()}
         </div>

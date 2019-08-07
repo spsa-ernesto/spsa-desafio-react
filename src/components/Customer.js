@@ -11,6 +11,7 @@ export default class Customer extends Component {
                 <td>{customer.lastName}</td>
                 <td>{customer.age}</td>
                 <td>{customer.birthDate}</td>
+                <td>{customer.estimateDeathDate}</td>
                 <td>
                 <button className="btn btn-danger" 
                     onClick={() => {

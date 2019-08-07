@@ -1,25 +1,28 @@
 {
-  "customers": [
+  "customersOfflineData": [
     {
       "customerId": "1",
       "firstName": "Pedro",
       "lastName": "Ayala",
       "age": "22",
-      "birthDate": "02/02/1980"
+      "birthDate": "02/02/1980",
+      "estimateDeathDate": "02/02/2059"
     },
     {
       "customerId": "2",
       "firstName": "Juan",
       "lastName": "Perez",
       "age": "33",
-      "birthDate": "05/05/1985"
+      "birthDate": "05/05/1985",
+      "estimateDeathDate": "02/02/2064"
     },
     {
       "customerId": "3",
       "firstName": "Ramiro",
       "lastName": "Diaz",
       "age": "28",
-      "birthDate": "02/06/1982"
+      "birthDate": "02/06/1982",
+      "estimateDeathDate": "02/02/2061"
     }
   ]
 }

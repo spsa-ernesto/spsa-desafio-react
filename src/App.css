@@ -23,6 +23,25 @@
   color: #61dafb;
 }
 
+.Inline-left {
+  display: inline-block;
+  vertical-align: left;
+  width: 20%;
+}
+
+.Inline-center {
+  display: inline-block;
+  vertical-align: middle;
+  width: 60%;
+  font-weight: bold;
+}
+
+.Inline-right {
+  display: inline-block;
+  vertical-align: right;
+  width: 20%;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
