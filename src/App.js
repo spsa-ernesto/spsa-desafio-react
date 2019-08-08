@@ -3,8 +3,6 @@ import './App.css';
 import CustomerList from './components/CustomerList';
 import CustomerNew from './components/CustomerNew';
 import CustomerKpi from './components/CustomerKpi';
-
-// offline data
 import {customersOfflineData} from './customersOfflineData.json';
 
 class App extends Component {
